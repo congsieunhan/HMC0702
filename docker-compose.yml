@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  tomcat:
+    image: tomcat:10.1.29
+    container_name: my_tomcat
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./war-files:/usr/local/tomcat/webapps  # Map your WAR files
+    environment:
+      - DB_URL=jdbc:mysql://db:3306/murach?autoReconnect=true
+      - DB_USER=root
+      - DB_PASSWORD=cong
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  db:
+    image: mysql:8.0
+    container_name: my_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: cong
+      MYSQL_DATABASE: murach
+      MYSQL_USER: root
+      MYSQL_PASSWORD: cong
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+
+volumes:
+  mysql_data:
+
+networks:
+  app_network:
+    driver: bridge
